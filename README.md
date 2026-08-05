@@ -56,7 +56,6 @@ app/src/main/java/com/example/fishtts/
 - API 키는 기기 내부에 암호화 저장됩니다.
 - 합성할 텍스트는 Fish Audio 서버로 전송됩니다.
 - 무료 모델(`s2.1-pro-free`)은 Fair Use 정책이 적용됩니다.
-- 관련 프로젝트: [fishreader](https://github.com/1K0K01/fishreader) — 같은 API를 쓰는 웹 이북 리더
 
 ## 🙏
 
