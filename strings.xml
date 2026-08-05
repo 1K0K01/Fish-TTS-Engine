@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Fish Audio TTS Engine</string>
+    <string name="tts_engine_label">Fish Audio TTS</string>
+
+    <string name="save">저장</string>
+    <string name="open_tts_settings">안드로이드 TTS 설정 열기</string>
+    <string name="test">테스트</string>
+    <string name="clear_cache">캐시 삭제</string>
+</resources>

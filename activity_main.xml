@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/etApiKey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fish Audio API Key"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/etEndpoint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="TTS endpoint (기본: https://api.fish.audio/v1/tts)" />
+
+        <EditText
+            android:id="@+id/etModel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="TTS model (기본: s2.1-pro)" />
+
+        <EditText
+            android:id="@+id/etLocale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="기본 Locale (새 보이스 추가 시 사용, 예: ko-KR)" />
+
+        <EditText
+            android:id="@+id/etSampleRate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="PCM sample rate (예: 44100)"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/etFormat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="요청 포맷: pcm 또는 wav" />
+
+        <EditText
+            android:id="@+id/etMaxChunk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="최대 문장 chunk 길이 (예: 900)"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/etExtra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="추가 JSON body (예: {&quot;latency&quot;:&quot;normal&quot;})"
+            android:inputType="textMultiLine"
+            android:minLines="2" />
+
+        <CheckBox
+            android:id="@+id/cbCache"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PCM 캐시 사용" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="보이스 목록"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <LinearLayout
+            android:id="@+id/voiceList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="보이스 추가"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <EditText
+            android:id="@+id/etNewVoiceName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="보이스 이름 (예: 나의 보이스)" />
+
+        <EditText
+            android:id="@+id/etNewVoiceId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Voice Model ID" />
+
+        <Button
+            android:id="@+id/btnAddVoice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="보이스 추가" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/btnOpenTts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/open_tts_settings" />
+
+        <Button
+            android:id="@+id/btnTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/test" />
+
+        <Button
+            android:id="@+id/btnClearCache"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/clear_cache" />
+
+    </LinearLayout>
+</ScrollView>
