@@ -14,9 +14,7 @@ class FishApiClient(private val prefs: SecurePrefs) {
         val voiceModelId: String,
         val ttsModel: String,
         val speed: Float,
-        val pitch: Float,
-        val sampleRate: Int,
-        val format: String
+        val pitch: Float
     )
 
     private val client = OkHttpClient.Builder()
@@ -28,30 +26,28 @@ class FishApiClient(private val prefs: SecurePrefs) {
 
     fun createCall(params: TtsParams): okhttp3.Call {
         val root = JSONObject()
-
         root.put("text", params.text)
         root.put("reference_id", params.voiceModelId)
+        root.put("format", "mp3")
+        root.put("mp3_bitrate", 128)
+        root.put("normalize", true)
+        root.put("latency", "balanced")
 
-        if (params.ttsModel.isNotBlank()) {
-        }
-
-        root.put("format", params.format)
-        root.put("sample_rate", params.sampleRate)
-        root.put("channels", 1)
-        root.put("speed", params.speed.toDouble())
+        val prosody = JSONObject()
+        prosody.put("speed", params.speed.toDouble())
+        prosody.put("volume", 0)
+        root.put("prosody", prosody)
 
         val extra = prefs.extraBodyJson.trim()
         if (extra.isNotEmpty()) {
             try {
                 val extraJson = JSONObject(extra)
                 val keys = extraJson.keys()
-
                 while (keys.hasNext()) {
                     val key = keys.next()
                     root.put(key, extraJson.get(key))
                 }
-            } catch (_: Exception) {
-            }
+            } catch (_: Exception) {}
         }
 
         val body = root.toString().toRequestBody(JSON_MEDIA_TYPE)
@@ -61,7 +57,6 @@ class FishApiClient(private val prefs: SecurePrefs) {
             .header("Authorization", "Bearer ${prefs.apiKey.trim()}")
             .header("Content-Type", "application/json")
             .header("model", params.ttsModel)
-            .header("Accept", ACCEPT_HEADER)
             .post(body)
             .build()
 
@@ -70,11 +65,6 @@ class FishApiClient(private val prefs: SecurePrefs) {
 
     companion object {
         const val DEFAULT_ENDPOINT = "https://api.fish.audio/v1/tts"
-
-        private val JSON_MEDIA_TYPE =
-            "application/json; charset=utf-8".toMediaTypeOrNull()
-
-        private const val ACCEPT_HEADER =
-            "audio/pcm, audio/wav;q=0.9, application/octet-stream;q=0.8, */*;q=0.5"
+        private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaTypeOrNull()
     }
 }
