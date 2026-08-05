@@ -28,7 +28,7 @@ class SecurePrefs(context: Context) {
         private const val KEY_EXTRA_BODY_JSON = "extra_body_json"
         private const val KEY_CACHE_ENABLED = "cache_enabled"
 
-        const val DEFAULT_TTS_MODEL = "s2.1-pro"
+        const val DEFAULT_TTS_MODEL = "s2.1-pro-free"
 
         const val DEFAULT_VOICE_1_ID = "b547f56c9a6f4241987f822a670fa79a"
         const val DEFAULT_VOICE_2_ID = "191f6bbd3526405ca6c445e531c7b8b0"
@@ -101,13 +101,13 @@ class SecurePrefs(context: Context) {
         }
 
     var format: String
-        get() = prefs.getString(KEY_FORMAT, "pcm") ?: "pcm"
+        get() = prefs.getString(KEY_FORMAT, "mp3") ?: "mp3"
         set(value) {
             prefs.edit().putString(KEY_FORMAT, value).apply()
         }
 
     var maxChunkChars: Int
-        get() = prefs.getInt(KEY_MAX_CHUNK, 900)
+        get() = prefs.getInt(KEY_MAX_CHUNK, 500)
         set(value) {
             prefs.edit().putInt(KEY_MAX_CHUNK, value).apply()
         }
