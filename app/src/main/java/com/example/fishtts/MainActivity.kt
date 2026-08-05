@@ -183,11 +183,14 @@ class MainActivity : AppCompatActivity() {
         tts = TextToSpeech(this, { status ->
             if (status == TextToSpeech.SUCCESS) {
                 val locale = prefs.defaultVoice()?.locale() ?: prefs.defaultLocale()
-                tts?.setLanguage(locale)
+                tts?.language = locale
 
                 val voiceName = prefs.defaultVoice()?.name
                 if (voiceName != null) {
-                    tts?.setVoice(voiceName)
+                    val voice = tts?.voices?.firstOrNull { it.name == voiceName }
+                    if (voice != null) {
+                        tts?.voice = voice
+                    }
                 }
 
                 tts?.speak(
