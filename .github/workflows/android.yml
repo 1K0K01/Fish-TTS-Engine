@@ -26,8 +26,34 @@ jobs:
       - name: Build debug APK
         run: gradle assembleDebug
 
-      - name: Prepare release asset
-        run: cp app/build/outputs/apk/debug/app-debug.apk FishTTS-Engine-latest.apk
+      - name: Prepare release asset and notes
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk FishTTS-Engine-latest.apk
+          VERSION=$(grep versionName app/build.gradle.kts | sed 's/.*"\(.*\)".*/\1/')
+          {
+            echo "## 🐟 Fish TTS Engine v${VERSION}"
+            echo ''
+            echo '> Fish Audio 보이스를 안드로이드 시스템 TTS로 사용하는 엔진'
+            echo ''
+            echo '### 📦 빌드 정보'
+            echo "- 빌드 일시: $(date -u '+%Y-%m-%d %H:%M UTC')"
+            echo "- 커밋: \`${GITHUB_SHA::7}\`"
+            echo '- 기본 모델: s2.1-pro-free'
+            echo ''
+            echo '### ✨ 주요 기능'
+            echo '- Fish Audio S2.1 Pro 시스템 TTS 엔진'
+            echo '- 보이스 모델 ID 추가/삭제/기본 지정'
+            echo '- MP3 합성 + 자동 디코딩 (잡음 없음)'
+            echo '- 문장 단위 청크 분할 (한국어 이북 최적화)'
+            echo '- PCM 캐시, 배속 연동'
+            echo ''
+            echo '### 📲 설치 방법'
+            echo '1. 아래 FishTTS-Engine-latest.apk 다운로드 후 설치'
+            echo '2. 앱 실행 -> Fish Audio API 키 입력 -> 저장'
+            echo '3. 안드로이드 설정 -> TTS 출력 -> 기본 엔진: Fish Audio TTS'
+            echo '4. 이북 리더기에서 읽어주기 사용'
+          } > RELEASE_NOTES.md
+          cat RELEASE_NOTES.md
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -40,7 +66,5 @@ jobs:
         with:
           tag_name: latest
           name: "Fish TTS Engine - latest"
-          body: |
-            자동 빌드된 최신 디버그 APK입니다.
-            아래 .apk를 다운로드해서 설치하세요.
+          body_path: RELEASE_NOTES.md
           files: FishTTS-Engine-latest.apk
