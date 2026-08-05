@@ -33,7 +33,6 @@ class FishApiClient(private val prefs: SecurePrefs) {
         root.put("reference_id", params.voiceModelId)
 
         if (params.ttsModel.isNotBlank()) {
-            root.put("model", params.ttsModel)
         }
 
         root.put("format", params.format)
@@ -61,6 +60,7 @@ class FishApiClient(private val prefs: SecurePrefs) {
             .url(prefs.endpoint.trim().ifEmpty { DEFAULT_ENDPOINT })
             .header("Authorization", "Bearer ${prefs.apiKey.trim()}")
             .header("Content-Type", "application/json")
+            .header("model", params.ttsModel)
             .header("Accept", ACCEPT_HEADER)
             .post(body)
             .build()
