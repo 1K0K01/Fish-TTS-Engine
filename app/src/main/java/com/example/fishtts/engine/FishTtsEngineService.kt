@@ -66,7 +66,7 @@ class FishTtsEngineService : TextToSpeechService() {
         }
     }
 
-    override fun onLoadLanguage(): Int {
+    override fun onLoadLanguage(lang: String, country: String, variant: String): Int {
         return TextToSpeech.SUCCESS
     }
 
@@ -165,7 +165,7 @@ class FishTtsEngineService : TextToSpeechService() {
 
         try {
             for (chunk in chunks) {
-                if (stopped.get() || callback.isCancelled()) {
+                if (stopped.get() || false) {
                     callback.error()
                     return
                 }
@@ -299,7 +299,7 @@ class FishTtsEngineService : TextToSpeechService() {
             val buffer = ByteArray(AUDIO_BUFFER_SIZE)
 
             while (true) {
-                if (stopped.get() || callback.isCancelled()) {
+                if (stopped.get() || false) {
                     return false
                 }
 
@@ -396,7 +396,7 @@ class FishTtsEngineService : TextToSpeechService() {
                 var total = 0L
 
                 while (true) {
-                    if (stopped.get() || callback.isCancelled()) {
+                    if (stopped.get() || false) {
                         return@use false
                     }
 

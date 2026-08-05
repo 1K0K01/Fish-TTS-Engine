@@ -43,7 +43,7 @@ class SecurePrefs(context: Context) {
             context,
             PREF_NAME,
             masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_GCM,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
     } catch (t: Throwable) {
