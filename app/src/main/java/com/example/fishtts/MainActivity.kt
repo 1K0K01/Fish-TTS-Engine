@@ -15,6 +15,9 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.button.MaterialButton
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +31,14 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // 엣지투엣지(Android 15+)에서 상태표시줄/제스처바에 콘텐츠가
+        // 가려지지 않도록 시스템 바 높이만큼 여백을 줍니다.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(top = bars.top, bottom = bars.bottom)
+            insets
+        }
 
         prefs = SecurePrefs(this)
 
