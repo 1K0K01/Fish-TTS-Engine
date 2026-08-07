@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- shadcn/ui "zinc" dark theme 토큰을 그대로 옮김 -->
+    <color name="background">#09090B</color>
+    <color name="card">#18181B</color>
+    <color name="border">#27272A</color>
+    <color name="ring">#D4D4D8</color>
+
+    <color name="foreground">#FAFAFA</color>
+    <color name="muted_foreground">#A1A1AA</color>
+
+    <color name="primary">#FAFAFA</color>
+    <color name="primary_foreground">#09090B</color>
+
+    <color name="secondary">#27272A</color>
+    <color name="secondary_foreground">#FAFAFA</color>
+
+    <color name="destructive">#F87171</color>
+    <color name="destructive_border">#7F1D1D</color>
+
+    <!-- 리플 전용 (알파 포함) -->
+    <color name="ripple_on_light">#1F09090B</color>
+    <color name="ripple_on_dark">#1FFAFAFA</color>
+    <color name="ripple_destructive">#1FF87171</color>
+</resources>

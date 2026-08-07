@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ===== Typography ===== -->
+    <!-- shadcn CardTitle: text-base font-semibold -->
+    <style name="Fish.CardTitle">
+        <item name="android:fontFamily">@font/pretendard_semibold</item>
+        <item name="android:textColor">@color/foreground</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- shadcn CardDescription: text-sm text-muted-foreground -->
+    <style name="Fish.CardDescription">
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+        <item name="android:textColor">@color/muted_foreground</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <!-- shadcn Label: text-sm font-medium (일반 대소문자, 강조 없음) -->
+    <style name="Fish.Label">
+        <item name="android:fontFamily">@font/pretendard_medium</item>
+        <item name="android:textColor">@color/foreground</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <!-- 도움말/보조 텍스트 -->
+    <style name="Fish.Muted">
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+        <item name="android:textColor">@color/muted_foreground</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <!-- 기술적 값(ID, 토큰) 표시용 — font-mono -->
+    <style name="Fish.Muted.Mono" parent="Fish.Muted">
+        <item name="android:fontFamily">@font/space_mono_regular</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <!-- ===== Card ===== -->
+    <style name="Fish.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/card</item>
+        <item name="strokeColor">@color/border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cardCornerRadius">@dimen/radius_lg</item>
+        <item name="cardElevation">0dp</item>
+    </style>
+
+    <!-- ===== Input ===== -->
+    <!-- 사람이 읽는 값 (이름 등) — font-sans -->
+    <style name="Fish.Input">
+        <item name="android:background">@drawable/bg_input</item>
+        <item name="android:textColor">@color/foreground</item>
+        <item name="android:textColorHint">@color/muted_foreground</item>
+        <item name="android:fontFamily">@font/pretendard_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingHorizontal">@dimen/space_3</item>
+        <item name="android:paddingVertical">@dimen/space_3</item>
+    </style>
+
+    <!-- 기술적 값 (endpoint, model, id, json...) — font-mono, shadcn에서 API key/코드 입력에 흔히 쓰는 조합 -->
+    <style name="Fish.Input.Mono" parent="Fish.Input">
+        <item name="android:fontFamily">@font/space_mono_regular</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <!-- ===== Button — shadcn Button variants ===== -->
+    <!-- default: 반전된 배경(밝은 배경 + 어두운 글자) -->
+    <style name="Fish.Button" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/primary</item>
+        <item name="cornerRadius">@dimen/radius_md</item>
+        <item name="rippleColor">@color/ripple_on_light</item>
+        <item name="android:textColor">@color/primary_foreground</item>
+        <item name="android:fontFamily">@font/pretendard_semibold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:paddingVertical">@dimen/space_3</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <!-- outline: 테두리만, 배경 투명 -->
+    <style name="Fish.Button.Outline" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="cornerRadius">@dimen/radius_md</item>
+        <item name="rippleColor">@color/ripple_on_dark</item>
+        <item name="android:textColor">@color/foreground</item>
+        <item name="android:fontFamily">@font/pretendard_medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingVertical">@dimen/space_3</item>
+    </style>
+
+    <!-- destructive: outline + 위험색 텍스트 (테이블 행 안에서의 삭제 액션 관례) -->
+    <style name="Fish.Button.Destructive" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/destructive_border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="cornerRadius">@dimen/radius_md</item>
+        <item name="rippleColor">@color/ripple_destructive</item>
+        <item name="android:textColor">@color/destructive</item>
+        <item name="android:fontFamily">@font/pretendard_medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- 목록 행 안에서 쓰는 소형 변형 (기본으로/삭제) -->
+    <style name="Fish.Button.Small" parent="Fish.Button.Outline">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="insetTop">0dp</item>
+        <item name="insetBottom">0dp</item>
+        <item name="android:paddingHorizontal">@dimen/space_3</item>
+        <item name="android:paddingVertical">@dimen/space_2</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="Fish.Button.Small.Destructive" parent="Fish.Button.Small">
+        <item name="strokeColor">@color/destructive_border</item>
+        <item name="android:textColor">@color/destructive</item>
+        <item name="rippleColor">@color/ripple_destructive</item>
+    </style>
+
+</resources>

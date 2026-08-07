@@ -10,6 +10,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fishtts.databinding.ActivityMainBinding
+import android.content.res.ColorStateList
+import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import com.google.android.material.button.MaterialButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -117,57 +122,86 @@ class MainActivity : AppCompatActivity() {
         if (voices.isEmpty()) {
             val emptyView = TextView(this).apply {
                 text = "저장된 보이스가 없습니다."
+                setTextColor(ContextCompat.getColor(context, R.color.muted_foreground))
+                textSize = 13f
+                typeface = ResourcesCompat.getFont(context, R.font.pretendard_regular)
+                setPadding(0, dp(8), 0, dp(8))
             }
             container.addView(emptyView)
             return
         }
 
         val defaultId = prefs.defaultVoiceId
+        val inflater = layoutInflater
 
-        for (voice in voices) {
-            val row = LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                layoutParams = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                setPadding(0, dp(4), 0, dp(4))
+        voices.forEachIndexed { index, voice ->
+            val row = inflater.inflate(R.layout.item_voice, container, false)
+
+            val name = row.findViewById<TextView>(R.id.tvVoiceName)
+            val idLabel = row.findViewById<TextView>(R.id.tvVoiceId)
+            val defaultButton = row.findViewById<MaterialButton>(R.id.btnVoiceDefault)
+            val deleteButton = row.findViewById<MaterialButton>(R.id.btnVoiceDelete)
+
+            name.text = voice.name
+            idLabel.text = voice.modelId
+
+            val isDefault = voice.modelId == defaultId
+            applyDefaultButtonState(defaultButton, isDefault)
+
+            defaultButton.setOnClickListener {
+                prefs.setDefaultVoice(voice.modelId)
+                renderVoices()
             }
 
-            val label = TextView(this).apply {
-                text = "${voice.name}\n${voice.modelId}"
-                layoutParams = LinearLayout.LayoutParams(
-                    0,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    1f
-                )
+            deleteButton.setOnClickListener {
+                prefs.deleteVoice(voice.modelId)
+                renderVoices()
+                Toast.makeText(this@MainActivity, "보이스 삭제 완료", Toast.LENGTH_SHORT).show()
             }
-
-            val defaultButton = Button(this).apply {
-                text = if (voice.modelId == defaultId) "기본" else "기본으로"
-                isEnabled = voice.modelId != defaultId
-
-                setOnClickListener {
-                    prefs.setDefaultVoice(voice.modelId)
-                    renderVoices()
-                }
-            }
-
-            val deleteButton = Button(this).apply {
-                text = "삭제"
-
-                setOnClickListener {
-                    prefs.deleteVoice(voice.modelId)
-                    renderVoices()
-                    Toast.makeText(this@MainActivity, "보이스 삭제 완료", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            row.addView(label)
-            row.addView(defaultButton)
-            row.addView(deleteButton)
 
             container.addView(row)
+
+            // divide-y: 마지막 행 제외하고 구분선 추가
+            if (index != voices.lastIndex) {
+                val divider = View(this).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        dp(1)
+                    )
+                    setBackgroundColor(ContextCompat.getColor(context, R.color.border))
+                }
+                container.addView(divider)
+            }
+        }
+    }
+
+    /**
+     * 기본 보이스일 때는 shadcn의 Badge(default variant, pill) 형태로,
+     * 그렇지 않을 때는 Fish.Button.Small(outline) 형태로 보이도록 전환합니다.
+     */
+    private fun applyDefaultButtonState(button: MaterialButton, isDefault: Boolean) {
+        button.text = if (isDefault) "기본" else "기본으로"
+        button.isEnabled = !isDefault
+
+        if (isDefault) {
+            button.strokeWidth = 0
+            button.cornerRadius = dp(999)
+            button.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.foreground)
+            )
+            button.setTextColor(ContextCompat.getColor(this, R.color.primary_foreground))
+            button.typeface = ResourcesCompat.getFont(this, R.font.pretendard_semibold)
+        } else {
+            button.strokeWidth = dp(1)
+            button.strokeColor = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.border)
+            )
+            button.cornerRadius = dp(8)
+            button.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, android.R.color.transparent)
+            )
+            button.setTextColor(ContextCompat.getColor(this, R.color.foreground))
+            button.typeface = ResourcesCompat.getFont(this, R.font.pretendard_medium)
         }
     }
 
