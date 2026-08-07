@@ -9,7 +9,7 @@
     <dimen name="space_6">24dp</dimen>
     <dimen name="space_8">32dp</dimen>
 
-    <!-- shadcn/ui --radius 스케일 (기본 0.5rem = 8dp) -->
+    <!-- shadcn/ui radius 스케일 (기본 0.5rem = 8dp) -->
     <dimen name="radius_sm">6dp</dimen>
     <dimen name="radius_md">8dp</dimen>
     <dimen name="radius_lg">12dp</dimen>
