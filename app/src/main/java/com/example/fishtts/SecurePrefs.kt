@@ -33,7 +33,7 @@ class SecurePrefs(context: Context) {
         const val DEFAULT_VOICE_1_ID = "9f5bf37aaa1048dd871a74356dd67f24"
         const val DEFAULT_VOICE_2_ID = "371503658994498498c6e5d2ebc072bb"
         const val DEFAULT_VOICE_3_ID = "b547f56c9a6f4241987f822a670fa79a"
-        const val DEFAULT_VOICE_4_ID = "191f6bbd3526405ca6c445e531c7b8b0"
+        const val DEFAULT_VOICE_4_ID = "459e4bddcf9a470891e44e6473e625c5"
         const val DEFAULT_VOICE_5_ID = "02b292cfae574c82bfdbff1d8603bc63"
         const val DEFAULT_VOICE_6_ID = "ff2945cbfd274c85b440bd39d8cb3729"
         const val DEFAULT_VOICE_7_ID = "048a61e0b1d647e1a8507e39ba15348a"
@@ -60,10 +60,10 @@ class SecurePrefs(context: Context) {
 
     private val builtInVoices = listOf(
         VoiceProfile(name = "차분한 목소리, 남성 A", modelId = DEFAULT_VOICE_1_ID, localeTag = "ko-KR"),
-        VoiceProfile(name = "내성적인 목소리, 남성 B", modelId = DEFAULT_VOICE_2_ID, localeTag = "ko-KR"),
+        VoiceProfile(name = "단정한 목소리, 남성 B", modelId = DEFAULT_VOICE_4_ID, localeTag = "ko-KR"),
+        VoiceProfile(name = "내성적인 목소리, 남성 C", modelId = DEFAULT_VOICE_2_ID, localeTag = "ko-KR"),
         VoiceProfile(name = "진중한 내레이션, 중년 남성 A", modelId = DEFAULT_VOICE_3_ID, localeTag = "ko-KR"),
-        VoiceProfile(name = "중후한 목소리, 중년 남성 B", modelId = DEFAULT_VOICE_4_ID, localeTag = "ko-KR"),
-        VoiceProfile(name = "권위있는 목소리, 중년 남성 C", modelId = DEFAULT_VOICE_5_ID, localeTag = "ko-KR"),
+        VoiceProfile(name = "권위있는 목소리, 중년 남성 B", modelId = DEFAULT_VOICE_5_ID, localeTag = "ko-KR"),
         VoiceProfile(name = "부드러운 내레이션, 여성 A", modelId = DEFAULT_VOICE_6_ID, localeTag = "ko-KR"),
         VoiceProfile(name = "절제된 내레이션, 여성 B", modelId = DEFAULT_VOICE_7_ID, localeTag = "ko-KR"),
         VoiceProfile(name = "또렷한 목소리, 여성 C", modelId = DEFAULT_VOICE_8_ID, localeTag = "ko-KR"),
