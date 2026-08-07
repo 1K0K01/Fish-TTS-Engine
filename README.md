@@ -48,10 +48,7 @@ Fish Audio의 자연스러운 음성으로 책을 들을 수 있게 해주는 �
 
 ## 🎨 디자인
 
-shadcn/ui의 컴포넌트 구조(Card / Button variant / Badge)를 안드로이드 네이티브 위젯으로 옮긴
-zinc 다크 테마입니다. 설정 항목은 **연결 · 재생 · 보이스 목록 · 보이스 추가** 네 개의 카드로
-나뉘어 있고, Endpoint·Model·Voice ID처럼 기술적인 값은 모노스페이스(Space Mono)로,
-사람이 읽는 텍스트는 Pretendard로 구분해 표기합니다.
+shadcn/ui의 컴포넌트 구조(Card / Button variant / Badge)를 안드로이드 네이티브 위젯으로 옮긴 zinc 다크 테마입니다. 
 
 ---
 
