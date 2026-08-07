@@ -18,13 +18,64 @@ import com.google.android.material.button.MaterialButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var prefs: SecurePrefs
+    private lateinit var cache: PcmCache
 
     private var tts: TextToSpeech? = null
+
+    // 캐시를 저장할 외부 폴더를 사용자가 고르는 시스템 폴더 선택기.
+    // 여기서 고른 폴더는 앱을 삭제해도 그대로 남아 있습니다.
+    private val pickCacheFolder = registerForActivityResult(
+        ActivityResultContracts.OpenDocumentTree()
+    ) { uri ->
+        if (uri != null) {
+            cache.linkFolder(uri)
+            updateCacheStatus()
+            Toast.makeText(this, "캐시 폴더 연동 완료", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // 설정 백업(JSON) 저장 위치를 고르는 선택기
+    private val exportBackup = registerForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        if (uri != null) {
+            try {
+                contentResolver.openOutputStream(uri)?.use { out ->
+                    out.write(SettingsBackup.export(prefs).toByteArray())
+                }
+                Toast.makeText(this, "백업 완료", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(this, "백업 실패: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    // 백업 파일(JSON)을 고르는 선택기
+    private val importBackup = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            try {
+                val text = contentResolver.openInputStream(uri)?.use {
+                    it.readBytes().toString(Charsets.UTF_8)
+                }
+                if (text != null) {
+                    SettingsBackup.import(prefs, text)
+                    load()
+                    Toast.makeText(this, "복원 완료", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this, "복원 실패: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         prefs = SecurePrefs(this)
+        cache = PcmCache(this)
 
         load()
 
@@ -61,9 +113,16 @@ class MainActivity : AppCompatActivity() {
             test()
         }
 
-        binding.btnClearCache.setOnClickListener {
-            PcmCache(this).clear()
-            Toast.makeText(this, "캐시 삭제 완료", Toast.LENGTH_SHORT).show()
+        binding.btnCacheSettings.setOnClickListener {
+            showCacheSettingsDialog()
+        }
+
+        binding.btnBackupExport.setOnClickListener {
+            exportBackup.launch("fish-tts-backup.json")
+        }
+
+        binding.btnBackupImport.setOnClickListener {
+            importBackup.launch(arrayOf("application/json"))
         }
 
         binding.btnAddVoice.setOnClickListener {
@@ -87,7 +146,40 @@ class MainActivity : AppCompatActivity() {
         binding.etExtra.setText(prefs.extraBodyJson)
         binding.cbCache.isChecked = prefs.cacheEnabled
 
+        updateCacheStatus()
         renderVoices()
+    }
+
+    private fun updateCacheStatus() {
+        binding.tvCacheStatus.text = "저장 위치: ${cache.currentStorageLabel()}"
+    }
+
+    private fun showCacheSettingsDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_cache_settings, null)
+        val statusView = dialogView.findViewById<TextView>(R.id.tvCacheStatusDialog)
+        val linkButton = dialogView.findViewById<MaterialButton>(R.id.btnLinkCacheFolderDialog)
+        val clearButton = dialogView.findViewById<MaterialButton>(R.id.btnClearCacheDialog)
+
+        statusView.text = "저장 위치: ${cache.currentStorageLabel()}"
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setTitle("캐시 설정")
+            .setView(dialogView)
+            .setNegativeButton("닫기", null)
+            .create()
+
+        linkButton.setOnClickListener {
+            pickCacheFolder.launch(null)
+            dialog.dismiss()
+        }
+
+        clearButton.setOnClickListener {
+            cache.clear()
+            Toast.makeText(this, "캐시 삭제 완료", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun save() {

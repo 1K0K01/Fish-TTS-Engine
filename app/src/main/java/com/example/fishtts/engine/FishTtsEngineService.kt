@@ -9,6 +9,7 @@ import android.speech.tts.Voice
 import android.util.Log
 import com.example.fishtts.FishApiClient
 import com.example.fishtts.Mp3Decoder
+import com.example.fishtts.PcmCache
 import com.example.fishtts.SecurePrefs
 import com.example.fishtts.TextChunker
 import okhttp3.Call
@@ -27,6 +28,7 @@ class FishTtsEngineService : TextToSpeechService() {
 
     private lateinit var prefs: SecurePrefs
     private lateinit var api: FishApiClient
+    private lateinit var cache: PcmCache
 
     private val stopped = AtomicBoolean(false)
     @Volatile private var activeCall: Call? = null
@@ -35,6 +37,7 @@ class FishTtsEngineService : TextToSpeechService() {
         super.onCreate()
         prefs = SecurePrefs(this)
         api = FishApiClient(prefs)
+        cache = PcmCache(this)
     }
 
     override fun onGetLanguage(): Array<String> {
@@ -88,6 +91,48 @@ class FishTtsEngineService : TextToSpeechService() {
             for (chunk in chunks) {
                 if (stopped.get()) { callback.error(); return }
 
+                val cacheKey = if (prefs.cacheEnabled) {
+                    cache.keyFor(
+                        text = chunk,
+                        voiceModelId = profile.modelId,
+                        ttsModel = prefs.ttsModel,
+                        speed = speed,
+                        pitch = pitch,
+                        sampleRate = prefs.sampleRate,
+                        format = prefs.format
+                    )
+                } else null
+
+                // ---- 캐시 적중: 네트워크 호출 없이 바로 재생 ----
+                val cachedEntry = cacheKey?.let { cache.get(it) }
+                if (cachedEntry != null) {
+                    val meta = cache.readMeta(cachedEntry)
+                    val input = cache.openPcmInputStream(cachedEntry)
+
+                    if (meta != null && input != null) {
+                        if (!started) {
+                            callback.start(meta.sampleRate, meta.encoding(), meta.channels)
+                            started = true
+                        }
+
+                        var playbackFailed = false
+                        input.use { stream ->
+                            val buf = ByteArray(BUFFER_SIZE)
+                            var read: Int
+                            while (stream.read(buf).also { read = it } != -1) {
+                                if (callback.audioAvailable(buf, 0, read) != TextToSpeech.SUCCESS) {
+                                    playbackFailed = true
+                                    break
+                                }
+                            }
+                        }
+
+                        if (playbackFailed) { callback.error(); return }
+                        continue
+                    }
+                }
+
+                // ---- 캐시 미스: 기존대로 API 호출 후 디코딩 ----
                 val params = FishApiClient.TtsParams(text = chunk, voiceModelId = profile.modelId, ttsModel = prefs.ttsModel, speed = speed, pitch = pitch)
                 val call = api.createCall(params)
                 activeCall = call
@@ -120,18 +165,41 @@ class FishTtsEngineService : TextToSpeechService() {
                         started = true
                     }
 
+                    var playbackFailed = false
                     FileInputStream(decoded.pcmFile).use { fis ->
                         val buf = ByteArray(BUFFER_SIZE)
                         var read: Int
                         while (fis.read(buf).also { read = it } != -1) {
                             if (callback.audioAvailable(buf, 0, read) != TextToSpeech.SUCCESS) {
-                                decoded.pcmFile.delete()
-                                callback.error()
-                                return
+                                playbackFailed = true
+                                break
                             }
                         }
                     }
+
+                    // 재생에 쓴 것과 별개로, 캐시가 켜져 있으면 결과를 저장해 둡니다.
+                    if (!playbackFailed && cacheKey != null) {
+                        try {
+                            val writer = cache.beginWrite(cacheKey)
+                            FileInputStream(decoded.pcmFile).use { fis ->
+                                val buf = ByteArray(BUFFER_SIZE)
+                                var read: Int
+                                while (fis.read(buf).also { read = it } != -1) {
+                                    writer.write(buf, 0, read)
+                                }
+                            }
+                            writer.finish(PcmCache.Meta(decoded.sampleRate, decoded.channels, 16))
+                        } catch (e: IOException) {
+                            Log.e(TAG, "캐시 저장 실패", e)
+                        }
+                    }
+
                     decoded.pcmFile.delete()
+
+                    if (playbackFailed) {
+                        callback.error()
+                        return
+                    }
                 }
             }
             callback.done()
